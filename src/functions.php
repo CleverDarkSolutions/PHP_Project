@@ -63,4 +63,53 @@ function cart(){
     echo "</table>"; 
 }
 
+function adminPanelAdd($con){
+    echo "<h1>Add</h1>";
+    echo "<div class=addProduct>";
+    echo "<form method=post>";
+
+    echo "ID: <input type=number name=id> <br>";
+    echo "Name: <input name=name> <br>";
+    echo "Price: <input type=number name=price> <br>";
+    echo "Quantity: <input type=number name=quantity> <br>";
+    echo "Size: <input type=number name=size> <br>";
+    echo "<input type=submit value=Dodaj>";
+
+    echo "</form>";
+    echo "</div>";
+    $query = "INSERT INTO produkt VALUES(".$_POST['id'].", '".$_POST['name']." ',".$_POST['price'].", ".$_POST['quantity'].", ".$_POST['size'].")";
+    if(isset($_POST['id']) && isset($_POST['name']) && isset($_POST['price']) && isset($_POST['quantity']) && isset($_POST['size']) ){
+        mysqli_query($con,$query);
+    }
+}
+
+function adminPanelModify($con, $which){
+    echo "<h1>Modify/h1>";
+    echo "<div class=modifyProduct>";
+    echo "<form method=post>";
+
+    echo "ID: <input type=number name=id> <br>";
+    echo "Price: <input type=number name=price> <br>";
+    echo "Quantity: <input type=number name=quantity> <br>";
+
+    echo "<input type=submit value=Zmien>";
+
+    echo "</form>";
+    echo "</div>";
+
+    if($which == 'price'){
+        $query = "UPDATE produkt SET price=".$_POST['price']."WHERE ID=".$_POST['id'];
+        if (isset($_POST['id']) && isset($_POST['price']) ) {
+            mysqli_query($con, $query);
+    }
+    else if($which == 'quantity'){
+        $query = "UPDATE produkt SET quantity=".$_POST['quantity']."WHERE ID=".$_POST['id'];
+        if(isset($_POST['id']) && isset($_POST['quantity'])){
+            mysqli_query($con,$query);
+        }
+    }
+}
+}
+
+
 ?>
