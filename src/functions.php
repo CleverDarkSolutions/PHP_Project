@@ -7,7 +7,7 @@ function fetchProducts($con){ // for everyone
     while($row = mysqli_fetch_assoc($con,$query)){
         echo "<div class=product>";
 
-        echo "<img src=".$row['link']." class=productimg >";
+        echo "<img src=".$row['link']." class=productImg >";
         echo "<h4>".$row['nazwa']."</hh4>";
         echo "<h4>".$row['cena']."zł</h4>";
         echo "<h2>Rozmiar: ".$row['rozmiar']."</h4>";
@@ -19,25 +19,28 @@ function fetchProducts($con){ // for everyone
 }
 
 function login($username, $password, $con){
-    if( isset($_SESSION['login']) && isset($_SESSION['password']) )
-        return 0; 
+    if( isset($_SESSION['user']['login']) && isset($_SESSION['user']['password']) )
+        header('Location: main.php');
     else {
         $loginquery = 'SELECT nazwa, haslo FROM user';
         while($row = mysqli_fetch_assoc($con,$loginquery)){
             if($row['nazwa'] == $username && $row['haslo'] == $password){
-                $_SESSION['login'] = $username;
-                $_SESSION['password'] = $password;
+                $_SESSION['user'] = [
+                    'login' => $username,
+                    'password' => $password
+                ];
             }
         }
     }
 }
 
 function logoff(){ // to be expanded
-    $_SESSION[] = [];
-    header('Location: index.php');
+    unset($_SESSION['user']['login']);
+    unset($_SESSION['user']['password']);
+    header('Location: login.php');
 }
 
-function cart(){
+function loadCart(){
     $items = $_SESSION['items'];
     echo "<table class=table>";
     echo "<thead>";
@@ -110,6 +113,19 @@ function adminPanelModify($con, $which){
     }
 }
 }
+
+function addToCart($id,$name,$price,$quantity,$size){
+    $item = array(
+        'id' => $id,
+        'name' => $name,
+        'price' => $price,
+        'quantity' => $quantity, // order quantity
+        'size' => $size
+    );
+    $_SESSION['items'].array_push($item);
+}
+
+
 
 
 ?>
