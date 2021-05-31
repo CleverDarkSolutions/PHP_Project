@@ -19,19 +19,16 @@ function fetchProducts($con){ // for everyone
 }
 
 function login($username, $password, $con){
-    if( isset($_SESSION['user']['login']) && isset($_SESSION['user']['password']) )
-        header('Location: main.php');
-    else {
-        $loginquery = 'SELECT nazwa, haslo FROM user';
-        while($row = mysqli_fetch_assoc($con,$loginquery)){
-            if($row['nazwa'] == $username && $row['haslo'] == $password){
-                $_SESSION['user'] = [
-                    'login' => $username,
-                    'password' => $password
-                ];
-            }
-        }
+    $loginquery = 'SELECT nazwa, haslo FROM user';
+    while($row = mysqli_fetch_assoc($con,$loginquery)){
+        if($row['nazwa'] == $username && $row['haslo'] == $password){
+            $_SESSION['user'] = [
+                'login' => $username,
+                'password' => $password
+            ];
+         }
     }
+    
 }
 
 function logoff(){ // to be expanded
@@ -124,8 +121,3 @@ function addToCart($id,$name,$price,$quantity,$size){
     );
     $_SESSION['items'].array_push($item);
 }
-
-
-
-
-?>
