@@ -1,17 +1,17 @@
 <?php 
 
 function fetchProducts($con){ // for everyone
-    $query = 'SELECT * FROM PRODUKT';
+    $query = mysqli_query($con,'SELECT * FROM PRODUKT');
 
     echo "<div class=productsCombined>";
-    while($row = mysqli_fetch_assoc($con,$query)){
+    while($row = mysqli_fetch_assoc($query)){
         echo "<div class=product>";
 
         echo "<img src=".$row['link']." class=productImg >";
-        echo "<h4>".$row['nazwa']."</hh4>";
-        echo "<h4>".$row['cena']."zł</h4>";
-        echo "<h2>Rozmiar: ".$row['rozmiar']."</h4>";
-        echo "<h2>Zostało ".$row['ilosc']." sztuk</h4>";
+        echo "<h2>".$row['nazwa']."</h4>";
+        echo "<h2>".$row['cena']."zł</h4>";
+        echo "<h4>Rozmiary: ".$row['rozmiarMin']."-".$row['rozmiarMax']."</h4>";
+        echo "<h4>Zostało ".$row['ilosc']." sztuk</h4>";
         
         echo "</div>";
     }
@@ -19,8 +19,8 @@ function fetchProducts($con){ // for everyone
 }
 
 function login($username, $password, $con){
-    $loginquery = 'SELECT nazwa, haslo FROM user';
-    while($row = mysqli_fetch_assoc($con,$loginquery)){
+    $loginquery = mysqli_query($con,'SELECT nazwa, haslo FROM user');
+    while($row = mysqli_fetch_assoc($loginquery)){
         if($row['nazwa'] == $username && $row['haslo'] == $password){
             $_SESSION['user'] = [
                 'login' => $username,
@@ -34,7 +34,7 @@ function login($username, $password, $con){
 function logoff(){ // to be expanded
     unset($_SESSION['user']['login']);
     unset($_SESSION['user']['password']);
-    header('Location: login.php');
+    header('Location: index.php');
 }
 
 function loadCart(){

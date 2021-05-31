@@ -1,3 +1,11 @@
+<?php
+include 'functions.php';
+$con = mysqli_connect('localhost', 'root', '', 'store');
+session_start();
+if (!isset($_SESSION['user']['login']) || !isset($_SESSION['user']['password'])) {
+    header("Location: index.php");
+}
+?>
 <html>
 
 <head>
@@ -9,29 +17,19 @@
 
     <div class="mainDiv">
 
-        <div class="userPanel">Zalogowany jako: <?php echo $_SESSION['user']['login']; ?><br>
-            <a href="main.php?logoff=true">Wyloguj</a>
-        </div>
-
         <div>
-            <nav className="navbar navbar-dark bg-dark">
-                <ul className="navbar-nav mr-auto list-inline">
-                    <li className="nav-item list-inline-item">
-                        <a className="nav-link">Oferta</a>
-                    </li>
-                    <li className="nav-item list-inline-item">
-                        <a className="nav-link">Koszyk</a>
-                    </li>
-                    <li className="nav-item list-inline-item">
-                        <a className="nav-link">Konto</a>
-                    </li>
-
-                    <li className="nav-item list-inline-item">
-                        <a className="nav-link">Cos</a>
-                    </li>
-                </ul>
-
+            <nav class="navbar navbar-light bg-light justify-content-center">
+                <span class="navbar-brand mb-0 h1"><a href="main.php">Sklep</a></span>
+                <span class="navbar-brand mb-0 h1"><a href="cart.php">Koszyk</a></span>
+                <span class="navbar-brand mb-0 h1"><a href="account.php">Konto</a></span>
+                <span class="navbar-brand mb-0 h1">Twórca</span>
+                <span class="navbar-brand mb-0 h1">Zalogowany jako: <?php echo ($_SESSION['user']['login']); ?></span>
+                <span class="navbar-brand mb-0 h1"><a href="main.php?logoff=true">Wyloguj</a></span>
             </nav>
+
+            <?php fetchProducts($con); ?>
+
+
 
 
         </div>
@@ -44,9 +42,8 @@
 </html>
 
 <?php
-include 'functions.php';
 
-if ($_GET['logoff'] == true) {
+if (isset($_GET['logoff'])) {
     logoff();
 }
 

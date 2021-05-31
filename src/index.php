@@ -7,9 +7,12 @@
 
 <body>
     <?php
-
+    include 'functions.php';
+    $con = mysqli_connect('localhost','root', '', 'store');
     session_start();
-
+    if(isset($_POST['login']) && isset($_POST['password'])){
+        login($_POST['login'], $_POST['password'], $con);
+    }
     if (isset($_SESSION['user']['login']) && isset($_SESSION['user']['password']))
         header('Location: main.php');
     else {

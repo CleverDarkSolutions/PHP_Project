@@ -1,11 +1,24 @@
-.product {
-
-}
-
-.productsCombined {
-
+a, a:hover, a:visited{
+    text-decoration: none;
+    color: black;
 }
 
 .productImg {
-    
+    width: 15em;
+    height: 15em;
+}
+
+.productsCombined{
+    margin-top: 5em;
+    margin-left: 2em;
+}
+
+.product {
+    border: 2px antiquewhite solid;
+    border-radius: 5em;
+    background-color:Cornsilk;
+    width: 25em;
+    height: 30em;
+    padding-left: 5em;
+    padding-top: 1em;
 }
