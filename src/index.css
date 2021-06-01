@@ -3,6 +3,9 @@ a, a:hover, a:visited{
     color: black;
 }
 
+body {
+    font-family: 'Quicksand', sans-serif;
+}
 .productImg {
     width: 15em;
     height: 15em;
@@ -11,18 +14,25 @@ a, a:hover, a:visited{
 .productsCombined{
     margin-top: 5em;
     margin-left: 2em;
+    user-select: none;
 }
 
 .product {
+    user-select: none;
     float: left;
-    border: 2px antiquewhite solid;
+    border: 2px snow solid;
     border-radius: 5em;
-    background-color:Cornsilk;
-    width: 25em;
-    height: 30em;
+    background-color:#F5F5F5;
+    width: 30%;
+    height: 50%;
     padding-top: 1em;
     margin-right: 1em;
+    margin-bottom: 1em;
     text-align: center;
+}
+
+.product:hover{
+    border: 2px black solid;
 }
 
 .username{
@@ -50,4 +60,18 @@ h5 {
 .table1{
     margin-left: 15%;
     width: 70%;
+}
+
+.logo {
+    font-family: 'ZCOOL KuaiLe', cursive;
+    position: absolute;
+    left: 5vw;
+}
+
+.payButton {
+    width: 20vw;
+    height: 20vh;
+    font-size:3vw;
+    text-align: center;
+    margin-left: 40%;
 }

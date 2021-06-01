@@ -2,24 +2,55 @@
 include 'produkt.php';
 
 session_start();
+
+function reloadSession(){
+    session_destroy();
+}
+
+function landingpage(){
+    echo " <nav class='navbar navbar-light bg-light justify-content-center'>";
+    echo    "<span class='logo navbar-brand mb-0 h1'><a href='main.php'>Pablo Sabre International</a></span>";
+    echo    "<span class='navbar-brand mb-0 h1'><a href='main.php'>Sklep</a></span>";
+    if(isset($_SESSION['user'])){
+        echo "<span class='navbar-brand mb-0 h1'><a href='cart.php'>Koszyk</a></span>";
+        echo "<span class='navbar-brand mb-0 h1'><a href='#'>Konto</a></span>";
+    }
+    echo        "<span class='navbar-brand mb-0 h1'>Twórca</span>";
+    echo        "<span class='navbar-brand mb-0 h1 username'>"; 
+                if(isset($_SESSION['user']['login']))
+                    echo "Zalogowany jako: ".($_SESSION['user']['login']); 
+    echo        "</span>";
+    echo        "<span class='navbar-brand mb-0 h1'>";
+                if(isset($_SESSION['user']['login']))
+                    echo "<a href=main.php?logoff=true>Wyloguj</a></span>";
+                else {
+                    echo "<span class=navbar-brand mb-0 h1><a href=index.php>Zaloguj</a></span>";
+                }
+    echo        "</nav>";
+}
+
 function login($username, $password, $con)
 {
     $loginquery = mysqli_query($con, 'SELECT nazwa, haslo FROM user');
     while ($row = mysqli_fetch_assoc($loginquery)) {
-        if ($row['nazwa'] == $username && $row['haslo'] == $password) {
-            $_SESSION['user'] = [
-                'login' => $username,
-                'password' => $password,
-                'cart' => array()
-            ];
+        if ($row['nazwa'] == $username && $row['haslo'] == $password) 
+                echo "huj";
+                 $_SESSION['user'] = [
+                    'login' => $username,
+                    'password' => $password,
+                    'cart' => $_SESSION['user']['cart']
+                ];
+            }
+    if ($_SESSION['user']['cart'] == NULL)
+        $_SESSION['user']['cart'] = array();
             fetchProducts($con);
         }
-    }
-}
+    
+
 
 
 function fetchProducts($con){ // for everyone
-    var_dump($_SESSION['user']['cart']);
+    var_dump($_SESSION['user']);
     if(!isset($_SESSION['firstlogin'])){
         $_SESSION['items'] = array();
         $_SESSION['itemCount'] = 0;
@@ -41,7 +72,7 @@ function fetchProducts($con){ // for everyone
         echo "<h5>Zostało ".$row['ilosc']." sztuk</h5>";
         if(isset($_SESSION['user'])){
             echo "<a href=addToCart.php?id=".$row['id'].">";
-            echo "<button class='btn btn-success'>Dodaj do koszyka</button>";
+            echo "<button class='btn btn-outline-secondary'>Dodaj do koszyka</button>";
             echo "</a>";
         }
         echo "</div>";
@@ -56,12 +87,10 @@ function fetchProducts($con){ // for everyone
 function logoff(){ // to be expanded
     unset($_SESSION['user']['login']);
     unset($_SESSION['user']['password']);
-    session_destroy();
     header('Location: index.php');
 }
 
 function loadCart(){
-    $items = $_SESSION['items'];
     echo "<table class='table table1'>";
     echo "<thead>";
     echo "<tr>";
@@ -74,20 +103,22 @@ function loadCart(){
     echo "</tr> </thead>";
 
     for($i=0;$i<intval($_SESSION['itemCount']);$i++){
+        if(isset($_SESSION['user']['cart'][$i] )){
         echo "<tr>";
         echo "<th scope=row>".$_SESSION['user']['cart'][$i] -> getId()."</th>";
         echo "<td>". $_SESSION['user']['cart'][$i]->getName()."</td>";
-        echo "<td>". $_SESSION['user']['cart'][$i]->getPrice()."</td>";
+        echo "<td>". $_SESSION['user']['cart'][$i]->getPrice()." zł</td>";
         //echo "<td>". $_SESSION['user']['cart'][$i]->getStoreQuantity()."</td>";
         echo "<td><img class=smallimg src=". $_SESSION['user']['cart'][$i]->getImage()."> </td>";
         echo "<td><a href=deleteElement.php?index=".$i.">";
         echo "<button class='btn btn-danger'>X</button>";
         echo "</a></td>";
         echo "</tr>";
+        }
     }
     echo "</table>"; 
-    if(intval($_SESSION['itemCount'])>0) {
-        echo "<button class='btn btn-warning'>Płace i zamawiam</button>";
+    if(count($_SESSION['user']['cart'])>0) {
+        echo "<button class=' payButton btn btn-outline-secondary'>Płace i zamawiam</button>";
     }
 }
 
@@ -143,6 +174,7 @@ function adminPanelModify($con, $which){
 }
 }
 
+
 function addToCart($num){
     var_dump($num);
     var_dump($_SESSION['items'][0]);
@@ -150,4 +182,3 @@ function addToCart($num){
 
     var_dump($_SESSION['user']['cart']);
 }
-?>
