@@ -23,7 +23,7 @@
         echo "</form>";
     }
     ?>
-
+    <a href="main.php">Strona</a>
 </body>
 
 </html>

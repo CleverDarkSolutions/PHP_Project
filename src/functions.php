@@ -1,39 +1,61 @@
-<?php 
+<?php
+include 'produkt.php';
+
+session_start();
+function login($username, $password, $con)
+{
+    $loginquery = mysqli_query($con, 'SELECT nazwa, haslo FROM user');
+    while ($row = mysqli_fetch_assoc($loginquery)) {
+        if ($row['nazwa'] == $username && $row['haslo'] == $password) {
+            $_SESSION['user'] = [
+                'login' => $username,
+                'password' => $password,
+                'cart' => array()
+            ];
+            fetchProducts($con);
+        }
+    }
+}
+
 
 function fetchProducts($con){ // for everyone
+    if(!isset($_SESSION['firstlogin'])){
+        $_SESSION['items'] = array();
+    }
     $query = mysqli_query($con,'SELECT * FROM PRODUKT');
-
     echo "<div class=productsCombined>";
     while($row = mysqli_fetch_assoc($query)){
-        echo "<div class=product>";
 
+        if(!isset($_SESSION['firstlogin'])){
+        $product = new Product($row['id'],$row['nazwa'], $row['cena'], $row['ilosc']);
+        array_push($_SESSION['items'], $product);
+        }
+
+        echo "<div class=product>";
         echo "<img src=".$row['link']." class=productImg >";
         echo "<h2>".$row['nazwa']."</h4>";
         echo "<h2>".$row['cena']."zł</h4>";
-        echo "<h4>Rozmiary: ".$row['rozmiarMin']."-".$row['rozmiarMax']."</h4>";
-        echo "<h4>Zostało ".$row['ilosc']." sztuk</h4>";
-        
+        echo "<h5>Rozmiary: ".$row['rozmiarMin']."-".$row['rozmiarMax']."</h5>";
+        echo "<h5>Zostało ".$row['ilosc']." sztuk</h5>";
+        if(isset($_SESSION['user'])){
+            echo "<a href=addToCart.php?id=".$row['id'].">";
+            echo "<button class='btn btn-success'>Zamow</button>";
+            echo "</a>";
+        }
         echo "</div>";
+
     }
     echo "</div>";
+    $_SESSION['firstlogin'] = 'asdjkdasl';
+
+    var_dump($_SESSION);
 }
 
-function login($username, $password, $con){
-    $loginquery = mysqli_query($con,'SELECT nazwa, haslo FROM user');
-    while($row = mysqli_fetch_assoc($loginquery)){
-        if($row['nazwa'] == $username && $row['haslo'] == $password){
-            $_SESSION['user'] = [
-                'login' => $username,
-                'password' => $password
-            ];
-         }
-    }
-    
-}
 
 function logoff(){ // to be expanded
     unset($_SESSION['user']['login']);
     unset($_SESSION['user']['password']);
+    session_destroy();
     header('Location: index.php');
 }
 
@@ -111,13 +133,7 @@ function adminPanelModify($con, $which){
 }
 }
 
-function addToCart($id,$name,$price,$quantity,$size){
-    $item = array(
-        'id' => $id,
-        'name' => $name,
-        'price' => $price,
-        'quantity' => $quantity, // order quantity
-        'size' => $size
-    );
-    $_SESSION['items'].array_push($item);
+function addToCart($num){
+
 }
+?>

@@ -1,10 +1,6 @@
 <?php
 include 'functions.php';
 $con = mysqli_connect('localhost', 'root', '', 'store');
-session_start();
-if (!isset($_SESSION['user']['login']) || !isset($_SESSION['user']['password'])) {
-    header("Location: index.php");
-}
 ?>
 <html>
 
@@ -23,11 +19,23 @@ if (!isset($_SESSION['user']['login']) || !isset($_SESSION['user']['password']))
                 <span class="navbar-brand mb-0 h1"><a href="cart.php">Koszyk</a></span>
                 <span class="navbar-brand mb-0 h1"><a href="account.php">Konto</a></span>
                 <span class="navbar-brand mb-0 h1">Twórca</span>
-                <span class="navbar-brand mb-0 h1">Zalogowany jako: <?php echo ($_SESSION['user']['login']); ?></span>
-                <span class="navbar-brand mb-0 h1"><a href="main.php?logoff=true">Wyloguj</a></span>
+                <span class="navbar-brand mb-0 h1 username"><?php 
+                if(isset($_SESSION['user']['login']))
+                    echo "Zalogowany jako: ".($_SESSION['user']['login']); 
+                ?></span>
+                <span class="navbar-brand mb-0 h1"><?php
+                if(isset($_SESSION['user']['login']))
+                    echo "<a href=main.php?logoff=true>Wyloguj</a></span>";
+                else {
+                    echo "<span class=navbar-brand mb-0 h1><a href=index.php>Zaloguj</a></span>";
+                }
+                ?>
             </nav>
 
-            <?php fetchProducts($con); ?>
+            <?php fetchProducts($con); 
+            
+        
+            ?>
 
 
 

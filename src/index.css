@@ -14,11 +14,30 @@ a, a:hover, a:visited{
 }
 
 .product {
+    float: left;
     border: 2px antiquewhite solid;
     border-radius: 5em;
     background-color:Cornsilk;
     width: 25em;
     height: 30em;
-    padding-left: 5em;
     padding-top: 1em;
+    margin-right: 1em;
+    text-align: center;
+}
+
+.username{
+    position: absolute;
+    right: 5%;
+}
+
+h5 {
+    text-align: left;
+    margin-left: 1em;
+}
+
+.input1 {
+    position: relative;
+    bottom: 3em;
+    left: 5em;
+    width: 3em;
 }
