@@ -19,15 +19,17 @@ function login($username, $password, $con)
 
 
 function fetchProducts($con){ // for everyone
+    var_dump($_SESSION['user']['cart']);
     if(!isset($_SESSION['firstlogin'])){
         $_SESSION['items'] = array();
+        $_SESSION['itemCount'] = 0;
     }
     $query = mysqli_query($con,'SELECT * FROM PRODUKT');
     echo "<div class=productsCombined>";
     while($row = mysqli_fetch_assoc($query)){
 
         if(!isset($_SESSION['firstlogin'])){
-        $product = new Product($row['id'],$row['nazwa'], $row['cena'], $row['ilosc']);
+        $product = new Product($row['id'],$row['nazwa'], $row['cena'], $row['ilosc'], $row['link']);
         array_push($_SESSION['items'], $product);
         }
 
@@ -39,7 +41,7 @@ function fetchProducts($con){ // for everyone
         echo "<h5>Zostało ".$row['ilosc']." sztuk</h5>";
         if(isset($_SESSION['user'])){
             echo "<a href=addToCart.php?id=".$row['id'].">";
-            echo "<button class='btn btn-success'>Zamow</button>";
+            echo "<button class='btn btn-success'>Dodaj do koszyka</button>";
             echo "</a>";
         }
         echo "</div>";
@@ -48,7 +50,6 @@ function fetchProducts($con){ // for everyone
     echo "</div>";
     $_SESSION['firstlogin'] = 'asdjkdasl';
 
-    var_dump($_SESSION);
 }
 
 
@@ -61,28 +62,37 @@ function logoff(){ // to be expanded
 
 function loadCart(){
     $items = $_SESSION['items'];
-    echo "<table class=table>";
+    echo "<table class='table table1'>";
     echo "<thead>";
     echo "<tr>";
     echo "<th scope=col>ID</th>";
     echo "<th scope=col>Name</th>";
     echo "<th scope=col>Price</th>";
-    echo "<th scope=col>Quantity</th>";
-    echo "<th scope=col>Size</th>";
+    //echo "<th scope=col>Quantity</th>";
     echo "<th scope=col>Image</th>";
+    echo "<th scope=col>Delete</th>";
     echo "</tr> </thead>";
 
-    for($i=0;$i<count($items);$i++){
+    for($i=0;$i<intval($_SESSION['itemCount']);$i++){
         echo "<tr>";
-        echo "<th scope=row>".$items[$i]['id']."</th>";
-        echo "<td>".$items[$i]['name']."</td>";
-        echo "<td>".$items[$i]['price']."</td>";
-        echo "<td>".$items[$i]['quantity']."</td>";
-        echo "<td>".$items[$i]['size']."</td>";
-        echo "<td><img src=".$items[$i]['link']."> </td>";
+        echo "<th scope=row>".$_SESSION['user']['cart'][$i] -> getId()."</th>";
+        echo "<td>". $_SESSION['user']['cart'][$i]->getName()."</td>";
+        echo "<td>". $_SESSION['user']['cart'][$i]->getPrice()."</td>";
+        //echo "<td>". $_SESSION['user']['cart'][$i]->getStoreQuantity()."</td>";
+        echo "<td><img class=smallimg src=". $_SESSION['user']['cart'][$i]->getImage()."> </td>";
+        echo "<td><a href=deleteElement.php?index=".$i.">";
+        echo "<button class='btn btn-danger'>X</button>";
+        echo "</a></td>";
         echo "</tr>";
     }
     echo "</table>"; 
+    if(intval($_SESSION['itemCount'])>0) {
+        echo "<button class='btn btn-warning'>Płace i zamawiam</button>";
+    }
+}
+
+function deleteItem($i){
+    \array_splice($_SESSION['user']['cart'],$i,1);
 }
 
 function adminPanelAdd($con){
@@ -134,6 +144,10 @@ function adminPanelModify($con, $which){
 }
 
 function addToCart($num){
+    var_dump($num);
+    var_dump($_SESSION['items'][0]);
+    array_push($_SESSION['user']['cart'],$_SESSION['items'][$num-1]);
 
+    var_dump($_SESSION['user']['cart']);
 }
 ?>

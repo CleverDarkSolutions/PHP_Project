@@ -5,13 +5,15 @@ class Product {
     public $name;
     public $price;
     public $storeQuantity;
+    public $image;
 
-    function __construct($id,$name,$price, $quantity)
+    function __construct($id,$name,$price, $quantity, $image)
     {
         $this -> id = $id;
         $this -> name = $name;
         $this -> price = $price;
         $this -> storeQuantity = $quantity;
+        $this -> image = $image;
     }
 
     public function getId(){
@@ -30,12 +32,8 @@ class Product {
         return $this ->storeQuantity;
     }
 
-    public function getUserQuantity(){
-        return $this->userQuantity;
-    }
-
-    public function setUserQuantity($arg){
-        $this -> userQuantity = $arg;
+    public function getImage(){
+        return $this -> image;
     }
 }
 

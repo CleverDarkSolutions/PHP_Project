@@ -41,3 +41,13 @@ h5 {
     left: 5em;
     width: 3em;
 }
+
+.smallimg {
+    width: 5em;
+    height: 5em;
+}
+
+.table1{
+    margin-left: 15%;
+    width: 70%;
+}
