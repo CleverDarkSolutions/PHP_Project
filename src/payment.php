@@ -22,7 +22,9 @@ if (!isset($_SESSION['user']['login']))
         <div>
 
             <span class='mediumlogo logo navbar-brand mb-0 h1'><a href='main.php'>Pablo Sabre International</a></span>
-
+            <?php
+            paymentPage($con);
+             ?>
         </div>
 
     </div>

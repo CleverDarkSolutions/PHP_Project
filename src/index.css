@@ -113,3 +113,24 @@ h4 {
     height: 5vh;
     margin: 0.5em;
 }
+
+.paymentDiv{
+    margin: 5%;
+}
+
+.select1{
+    width: 10em;
+    font-size: 2em;
+   
+}
+.summary {
+    position: relative;
+    width: 10em;
+    top: 10em;
+    border-top: 2px solid black;
+}
+
+.finalbutton {
+    font-size: 3em;
+    margin: 2em; 
+}

@@ -1,4 +1,5 @@
 <?php
+error_reporting(0);
 include 'produkt.php';
 
 session_start();
@@ -29,10 +30,36 @@ function landingpage(){
     echo        "</nav>";
 }
 
-function paymentPage(){
-    echo "<div class=paymentDiv>";
+function calculateDate(){
+    $temp = getdate();
+    $string = $temp[3   ].$temp[5].$temp[6];
+    $now =  date_create($string);
+    date_add($now, date_interval_create_from_date_string("7 days"));
+    return date_format($now,"Y-m-d");
+}
 
+function pay($price){
+    //$_SESSION['user']['cart'];
+}
+
+function paymentPage($con){
+    echo "<div class=paymentDiv>";
+    echo "<h3> Wybierz forme płatności</h3>";
+    echo "<select class=select1>";
+    echo    "<option>Przelew</option>";
+    echo    "<option>Paysafecard</option>";
+    echo    "<option>Blik</option>";
+    echo    "<option>Karta kredytowa</option>";
+    echo "</select>";
+    echo "<h1 class=summary>Do zaplaty: " . $_SESSION['summary'] . " zł</h7>";
+    echo "<h3>Spodziewany czas wysyłki:<br> <b>7 dni</b></h3>";
+    echo "<h3 class=shipdate>Dostaniesz swoją paczke: <br><b>".calculateDate()."</b></h3>";
+    $data = getUserData($con);
+    echo "<h3>Na adres: <br><b>".$data[2]."</b></h3>";
+    echo "<h3>Powiadomienia o postępach w zamówieniu dostaniesz na mail : <br><b>".$data[0]."</b></h3>";
     echo "</div>";
+
+    echo "<a href=#><button type=button class=' finalbutton btn btn-outline-dark'>Płace i zamawiam</button>";
 }
 
 function login($username, $password, $con)
@@ -126,9 +153,9 @@ function loadCart(){
         $summary += $_SESSION['user']['cart'][$i] -> getPrice();
         }
     }
-
+    $_SESSION['summary'] = $summary;
     
-    if(count($_SESSION['user']['cart'])>0) {
+    if(count($_SESSION['user']['cart'])>0) { // do omowienia
         echo "<tr><th scope=col>Do zapłaty:</th>";
         echo "<th scope=col></th>";
         echo "<th scope=col colspan=5>" . $summary . "zł</th></tr>";
@@ -136,10 +163,11 @@ function loadCart(){
     echo "</table>"; 
 
     if (count($_SESSION['user']['cart']) > 0) 
-        echo "<button class=' payButton btn btn-outline-secondary'>Płace i zamawiam</button>";
-    }
+        echo "<a href=payment.php><button class=' payButton btn btn-outline-secondary'>Do płatności</button></a>";
+    
     else{
         echo "<h4>Jeszcze nic nie wybrałeś!</h4>";
+    }
     }
     
 }
@@ -205,22 +233,27 @@ function addToCart($num){
     var_dump($_SESSION['user']['cart']);
 }
 
+function getUserData($con){
+    $query = mysqli_query($con, "SELECT * FROM User WHERE nazwa='" . $_SESSION['user']['login'] . "'");
+    //var_dump($_SESSION['user']['login']);
+    while ($row = mysqli_fetch_assoc($query)) {
+        $email = $row['email'];
+        $balance = $row['saldo'];
+        $address = $row['adres'];
+        $login = $row['nazwa'];
+        $password = $row['haslo'];
+    }
+    return $data = [$email,$balance,$address,$login,$password];
+}
+
 function loadAccount($con){
-        $query = mysqli_query($con, "SELECT * FROM User WHERE nazwa='".$_SESSION['user']['login']."'");
-        //var_dump($_SESSION['user']['login']);
-        while( $row = mysqli_fetch_assoc($query) ){
-            $email = $row['email'];
-            $balance = $row['saldo'];
-            $address = $row['adres'];
-            $login = $row['nazwa'];
-            $password = $row['haslo'];
-        }
+        $data = getUserData($con);
         echo "<div class=accountDiv>";
         echo "<h1><b>Dane</b></h1>";
-        echo "<h4>Login: ".$login."</h4>";
-        echo "<h4>Haslo: ".$password."</h4>";
-        echo "<h4>Email: ".$email."</h4>";
-        echo "<h4>Adres: ".$address."</h4>";
-        echo "<h4>Bilans: ".$balance." zł</h4>";
+        echo "<h4>Login: ".$data[3]."</h4>";
+        echo "<h4>Haslo: ".$data[4]."</h4>";
+        echo "<h4>Email: ".$data[0]."</h4>";
+        echo "<h4>Adres: ".$data[2]."</h4>";
+        echo "<h4>Bilans: ".$data[1]." zł</h4>";
         echo "</div>";
 }
