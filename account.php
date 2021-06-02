@@ -1,6 +1,5 @@
 <?php
 include 'functions.php';
-$con = mysqli_connect('localhost', 'root', '', 'store');
 ?>
 <html>
 
