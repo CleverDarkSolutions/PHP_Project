@@ -11,9 +11,9 @@ function landingpage(){
     echo " <nav class='navbar navbar-light bg-light justify-content-center'>";
     echo    "<span class='logo navbar-brand mb-0 h1'><a href='main.php'>Pablo Sabre International</a></span>";
     echo    "<span class='navbar-brand mb-0 h1'><a href='main.php'>Sklep</a></span>";
-    if(isset($_SESSION['user'])){
+    if(isset($_SESSION['user']['login'])){
         echo "<span class='navbar-brand mb-0 h1'><a href='cart.php'>Koszyk</a></span>";
-        echo "<span class='navbar-brand mb-0 h1'><a href='#'>Konto</a></span>";
+        echo "<span class='navbar-brand mb-0 h1'><a href='account.php'>Konto</a></span>";
     }
     echo        "<span class='navbar-brand mb-0 h1'>Twórca</span>";
     echo        "<span class='navbar-brand mb-0 h1 username'>"; 
@@ -29,28 +29,36 @@ function landingpage(){
     echo        "</nav>";
 }
 
+function paymentPage(){
+    echo "<div class=paymentDiv>";
+
+    echo "</div>";
+}
+
 function login($username, $password, $con)
 {
     $loginquery = mysqli_query($con, 'SELECT nazwa, haslo FROM user');
     while ($row = mysqli_fetch_assoc($loginquery)) {
-        if ($row['nazwa'] == $username && $row['haslo'] == $password) 
-                echo "huj";
+        if ($row['nazwa'] == $username && $row['haslo'] == $password){
+             
                  $_SESSION['user'] = [
                     'login' => $username,
                     'password' => $password,
                     'cart' => $_SESSION['user']['cart']
                 ];
+
+            if ($_SESSION['user']['cart'] == NULL){
+                $_SESSION['user']['cart'] = array();
+                fetchProducts($con);
             }
-    if ($_SESSION['user']['cart'] == NULL)
-        $_SESSION['user']['cart'] = array();
-            fetchProducts($con);
         }
-    
+     }
+    }
 
 
 
 function fetchProducts($con){ // for everyone
-    var_dump($_SESSION['user']);
+    //var_dump($_SESSION['user']);
     if(!isset($_SESSION['firstlogin'])){
         $_SESSION['items'] = array();
         $_SESSION['itemCount'] = 0;
@@ -70,7 +78,7 @@ function fetchProducts($con){ // for everyone
         echo "<h2>".$row['cena']."zł</h4>";
         echo "<h5>Rozmiary: ".$row['rozmiarMin']."-".$row['rozmiarMax']."</h5>";
         echo "<h5>Zostało ".$row['ilosc']." sztuk</h5>";
-        if(isset($_SESSION['user'])){
+        if(isset($_SESSION['user']['login'])){
             echo "<a href=addToCart.php?id=".$row['id'].">";
             echo "<button class='btn btn-outline-secondary'>Dodaj do koszyka</button>";
             echo "</a>";
@@ -101,7 +109,8 @@ function loadCart(){
     echo "<th scope=col>Image</th>";
     echo "<th scope=col>Delete</th>";
     echo "</tr> </thead>";
-
+    $summary = 0;
+    if($_SESSION['user']['login']){
     for($i=0;$i<intval($_SESSION['itemCount']);$i++){
         if(isset($_SESSION['user']['cart'][$i] )){
         echo "<tr>";
@@ -114,12 +123,25 @@ function loadCart(){
         echo "<button class='btn btn-danger'>X</button>";
         echo "</a></td>";
         echo "</tr>";
+        $summary += $_SESSION['user']['cart'][$i] -> getPrice();
         }
     }
-    echo "</table>"; 
+
+    
     if(count($_SESSION['user']['cart'])>0) {
+        echo "<tr><th scope=col>Do zapłaty:</th>";
+        echo "<th scope=col></th>";
+        echo "<th scope=col colspan=5>" . $summary . "zł</th></tr>";
+    }
+    echo "</table>"; 
+
+    if (count($_SESSION['user']['cart']) > 0) 
         echo "<button class=' payButton btn btn-outline-secondary'>Płace i zamawiam</button>";
     }
+    else{
+        echo "<h4>Jeszcze nic nie wybrałeś!</h4>";
+    }
+    
 }
 
 function deleteItem($i){
@@ -181,4 +203,24 @@ function addToCart($num){
     array_push($_SESSION['user']['cart'],$_SESSION['items'][$num-1]);
 
     var_dump($_SESSION['user']['cart']);
+}
+
+function loadAccount($con){
+        $query = mysqli_query($con, "SELECT * FROM User WHERE nazwa='".$_SESSION['user']['login']."'");
+        //var_dump($_SESSION['user']['login']);
+        while( $row = mysqli_fetch_assoc($query) ){
+            $email = $row['email'];
+            $balance = $row['saldo'];
+            $address = $row['adres'];
+            $login = $row['nazwa'];
+            $password = $row['haslo'];
+        }
+        echo "<div class=accountDiv>";
+        echo "<h1><b>Dane</b></h1>";
+        echo "<h4>Login: ".$login."</h4>";
+        echo "<h4>Haslo: ".$password."</h4>";
+        echo "<h4>Email: ".$email."</h4>";
+        echo "<h4>Adres: ".$address."</h4>";
+        echo "<h4>Bilans: ".$balance." zł</h4>";
+        echo "</div>";
 }

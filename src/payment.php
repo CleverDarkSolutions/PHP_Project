@@ -1,9 +1,10 @@
 <?php
 include 'functions.php';
 $con = mysqli_connect('localhost', 'root', '', 'store');
-if(!isset($_SESSION['user']['login']))
+if (!isset($_SESSION['user']['login']))
     header("Location: main.php");
 ?>
+
 <html>
 
 <head>
@@ -20,12 +21,8 @@ if(!isset($_SESSION['user']['login']))
 
         <div>
 
+            <span class='mediumlogo logo navbar-brand mb-0 h1'><a href='main.php'>Pablo Sabre International</a></span>
 
-            <?php
-            landingpage();
-            loadCart();
-
-            ?>
         </div>
 
     </div>
@@ -34,11 +31,3 @@ if(!isset($_SESSION['user']['login']))
 </body>
 
 </html>
-
-<?php
-
-if (isset($_GET['logoff'])) {
-    logoff();
-}
-
-?>
