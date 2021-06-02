@@ -1,6 +1,16 @@
 <?php
 include 'functions.php';
-$con = mysqli_connect('localhost', 'root', '', 'store');
+$ //Get Heroku ClearDB connection information
+$cleardb_url = parse_url(getenv("mysql://b8037eebd25c3c:a17473d7@eu-cdbr-west-01.cleardb.com/heroku_f5b528b5400594f?reconnect=true"));
+$cleardb_server = $cleardb_url["host"];
+$cleardb_username = $cleardb_url["user"];
+$cleardb_password = $cleardb_url["pass"];
+$cleardb_db = substr($cleardb_url["path"], 1);
+$active_group = 'default';
+$query_builder = TRUE;
+// Connect to DB
+$con = mysqli_connect($cleardb_server, $cleardb_username, $cleardb_password, $cleardb_db);
+
 if(!isset($_SESSION['user']['login']))
     header("Location: main.php");
 ?>
