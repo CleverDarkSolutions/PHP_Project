@@ -249,7 +249,7 @@ function addToCart($num){
     var_dump($num);
     var_dump($_SESSION['items'][0]);
     array_push($_SESSION['user']['cart'],$_SESSION['items'][$num-1]);
-
+    header("Location: main.php");
     var_dump($_SESSION['user']['cart']);
 }
 
