@@ -1,6 +1,8 @@
 <?php
-//error_reporting(0);
+error_reporting(0);
+// CLEAR DB HEROKU
 include 'produkt.php';
+
 $cleardb_url = parse_url(getenv("CLEARDB_DATABASE_URL"));
 $cleardb_server = $cleardb_url["host"];
 $cleardb_username = $cleardb_url["user"];
@@ -10,6 +12,12 @@ $active_group = 'default';
 $query_builder = TRUE;
 // Connect to DB
 $con = mysqli_connect($cleardb_server, $cleardb_username, $cleardb_password, $cleardb_db);
+
+
+
+// XAMPP LOCALHOST
+//$con = mysqli_connect('localhost','root','','store');
+
 
 session_start();
 
@@ -47,8 +55,11 @@ function calculateDate(){
     return date_format($now,"Y-m-d");
 }
 
-function pay($price){
-    //$_SESSION['user']['cart'];
+function pay($price, $con){
+    unset($_SESSION['user']['cart']);
+    $currentBalance = getUserData($con)[1];
+    $newBalance = $currentBalance - $price;
+    mysqli_query($con, 'UPDATE User SET saldo='.$newBalance);
 }
 
 function paymentPage($con){
@@ -68,7 +79,7 @@ function paymentPage($con){
     echo "<h3>Powiadomienia o postępach w zamówieniu dostaniesz na mail : <br><b>".$data[0]."</b></h3>";
     echo "</div>";
 
-    echo "<a href=#><button type=button class=' finalbutton btn btn-outline-dark'>Płace i zamawiam</button>";
+    echo "<a href=transaction.php ><button type=button class=' finalbutton btn btn-outline-dark'>Płace i zamawiam</button>";
 }
 
 function login($username, $password, $con)
