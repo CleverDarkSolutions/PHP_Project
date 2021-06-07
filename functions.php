@@ -79,7 +79,7 @@ function paymentPage($con){
     echo "<h3>Powiadomienia o postępach w zamówieniu dostaniesz na mail : <br><b>".$data[0]."</b></h3>";
     echo "</div>";
 
-    echo "<a href=transaction.php ><button type=button class=' finalbutton btn btn-outline-dark'>Płace i zamawiam</button>";
+    echo "<a href='transaction.php' ><button type=button class=' finalbutton btn btn-outline-dark'>Płace i zamawiam</button> </a>";
 }
 
 function login($username, $password, $con)
